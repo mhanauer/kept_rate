@@ -1,1 +1,34 @@
-#
+---
+title: "Test"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Load in kept rates
+Kept rates for aug through october for 2019 and 2020 for CIN, CFL, and CIL
+```{r}
+setwd("S:/Indiana Research & Evaluation/Matthew Hanauer/ryan_leah_folder/kept_data")
+kept_2019 = read.csv("kept_rate_avatar_aug_oct_2019.csv", header = TRUE)
+kept_2020 = read.csv("kept_rate_avatar_aug_oct_2020.csv", heaer = TRUE)
+library(dplyr)
+kept_2019_clean = kept_2019 %>%
+  mutate(Percent.Kept = gsub("\\D", "", Percent.Kept)) %>%
+  mutate(Percent.Kept = as.numeric(Percent.Kept))
+
+  
+kept_2020_clean = kept_2020 %>%
+  mutate(Percent.Kept = gsub("\\D", "", Percent.Kept)) %>%
+  mutate(Percent.Kept = as.numeric(Percent.Kept))
+
+```
+Get means and compare
+```{r}
+mean_kept_2019 = round(mean(kept_2019_clean$Percent.Kept),2)
+mean_kept_2020 = round(mean(kept_2020_clean$Percent.Kept),2)
+p_increase = round(mean_kept_2020-mean_kept_2019,2)
+kept_rate_results = data.frame(mean_kept_2019, mean_kept_2020, p_increase)
+kept_rate_results
+```
+
