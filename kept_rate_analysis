@@ -27,8 +27,52 @@ Get means and compare
 mean_kept_2019 = round(mean(kept_2019_clean$Percent.Kept),2)
 mean_kept_2020 = round(mean(kept_2020_clean$Percent.Kept),2)
 p_increase = round(mean_kept_2020-mean_kept_2019,2)
-kept_rate_results = data.frame(mean_kept_2019, mean_kept_2020, p_increase)
+
+
+```
+Get the counts services and people
+```{r}
+client_2020_count =  kept_2020_clean %>%
+  group_by(Source.Client.ID) %>%
+  count(Source.Client.ID) 
+client_2020_count = dim(client_2020_count)[1]
+client_2020_count
+
+client_2019_count =  kept_2019_clean %>%
+  group_by(Source.Client.ID) %>%
+  count(Source.Client.ID) 
+client_2019_count = dim(client_2019_count)[1]
+client_2019_count
+
+service_2020_count =  sum(kept_2020_clean$Scheduled.Volume)
+service_2020_count
+
+service_2019_count =  sum(kept_2019_clean$Scheduled.Volume)
+service_2019_count
+
+```
+Put all into results
+```{r}
+
+kept_rate_results = data.frame(mean_kept_2019, mean_kept_2020, p_increase, client_2020_count, client_2019_count, service_2020_count, service_2019_count)
 kept_rate_results
 write.csv(kept_rate_results, "kept_rate_results.csv", row.names = FALSE)
+```
+Do a proportion test
+```{r}
+
+p1 = mean_kept_2019 / 100
+p2 = mean_kept_2020 / 100
+p_diff = p1-p2
+n1 = service_2019_count
+n2 = service_2020_count
+p = (p1 * n1 + p2 * n2) / (n1 + n2)
+se = sqrt(p * ( 1 - p ) * ((1/n1) + (1/n2))) 
+z = (p1 - p2) / se
+p_reasses = round(2*pnorm(-abs(z)),4)
+p_reasses
+
+ci_upper = p_diff+1.96*se
+ci_lower = p_diff-1.96*se
 ```
 
