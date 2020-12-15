@@ -55,7 +55,7 @@ Put all into results
 ```{r}
 
 kept_rate_results = data.frame(mean_kept_2019, mean_kept_2020, p_increase, client_2020_count, client_2019_count, service_2020_count, service_2019_count)
-kept_rate_results
+kept_rate_results[,1:3] = paste0(kept_rate_results[,1:3], "%")
 write.csv(kept_rate_results, "kept_rate_results.csv", row.names = FALSE)
 ```
 Do a proportion test
